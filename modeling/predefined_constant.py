@@ -1,4 +1,11 @@
-from transformers.modeling_bert import BERT_PRETRAINED_MODEL_ARCHIVE_MAP
+# BERT_PRETRAINED_MODEL_ARCHIVE_MAP is deprecated in newer transformers versions
+# Using an empty dict as models are now loaded via AutoModel
+try:
+    from transformers.modeling_bert import BERT_PRETRAINED_MODEL_ARCHIVE_MAP
+except ImportError:
+    # For transformers >= 4.0, this is no longer available
+    # Models are loaded via AutoModel instead
+    BERT_PRETRAINED_MODEL_ARCHIVE_MAP = {}
 
 
 CLS_TOKEN_INDEX = 0

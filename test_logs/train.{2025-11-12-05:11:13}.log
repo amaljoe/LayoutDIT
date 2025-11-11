@@ -1,0 +1,47 @@
+11/12/2025 05:11:13 - train.py[line:158] - WARNING - __main__ -   Process rank: -1, device: cpu, n_gpu: 0, distributed training: False, 16-bits training: False
+11/12/2025 05:11:13 - train.py[line:164] - INFO - __main__ -   Training/evaluation args Namespace(train_file=None, train_folder='test_data', base_model_type='bert', layoutlm_only_layout=False, model_name='bert-base-uncased', output_dir='test_output', model_recovery_dir=None, log_dir='test_logs', config_name=None, tokenizer_name=None, cache_dir='/home/compiling-ganesh/24m0797/.cache/huggingface', max_source_length=128, max_target_length=128, num_hidden_layers=2, cached_train_features_file=None, do_lower_case=False, per_gpu_train_batch_size=1, learning_rate=7e-05, weight_decay=0.01, adam_epsilon=1e-08, max_grad_norm=1.0, label_smoothing=0.1, num_training_steps=5, num_training_epochs=None, num_warmup_steps=2, random_prob=0.05, keep_prob=0.8, logging_steps=1, save_steps=10, no_cuda=True, seed=42, local_rank=-1, fp16=False, fp16_opt_level='O1', senseg_encoder_num_hidden_layers=1, senseg_task_loss_relative_weight=1.0, src_sen_max_len=64, tgt_sen_max_len=64, tgt_max_position_embeddings=128, trans_decoder_num_hidden_layers=2, trans_task_relative_weight=1, trans_decoder_max_fwd_tokens=512, n_gpu=0, device=device(type='cpu'))
+11/12/2025 05:11:13 - train.py[line:220] - INFO - __main__ -   Model config for seq2seq: BertForSeq2SeqConfig {
+  "attention_probs_dropout_prob": 0.1,
+  "base_model_type": "bert",
+  "classifier_dropout": null,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "label_smoothing": 0.1,
+  "layer_norm_eps": 1e-12,
+  "layoutlm_only_layout": false,
+  "max_position_embeddings": 512,
+  "max_source_length": 128,
+  "max_target_length": 128,
+  "model_type": "bert",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 2,
+  "pad_token_id": 0,
+  "position_embedding_type": "absolute",
+  "senseg_encoder_num_hidden_layers": 1,
+  "senseg_task_ctg_to_id_map": {
+    "B": 0,
+    "I": 1
+  },
+  "senseg_task_id_to_ctg_map": {
+    "0": "B",
+    "1": "I"
+  },
+  "senseg_task_loss_relative_weight": 1.0,
+  "src_sen_max_len": 64,
+  "tgt_max_position_embeddings": 128,
+  "tgt_sen_max_len": 64,
+  "tgt_vocab_size": 21128,
+  "trans_decoder_max_fwd_tokens": 512,
+  "trans_decoder_num_hidden_layers": 2,
+  "trans_task_relative_weight": 1,
+  "transformers_version": "4.30.0",
+  "type_vocab_size": 2,
+  "use_cache": true,
+  "vocab_size": 30522
+}
+
+11/12/2025 05:11:14 - dataset.py[line:27] - INFO - modeling.dataset -   Creating features from dataset at test_data
+11/12/2025 05:11:14 - dataset.py[line:40] - INFO - modeling.dataset -   Start loading test_data/test_text.json

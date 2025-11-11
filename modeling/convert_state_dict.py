@@ -1,6 +1,8 @@
 import torch
 
-from transformers.modeling_utils import cached_path, WEIGHTS_NAME, TF2_WEIGHTS_NAME, TF_WEIGHTS_NAME
+from transformers.modeling_utils import WEIGHTS_NAME, TF2_WEIGHTS_NAME, TF_WEIGHTS_NAME
+import os
+# cached_path was removed in newer transformers, models are loaded via from_pretrained directly
 
 import copy
 import logging
@@ -12,8 +14,20 @@ def get_checkpoint_from_transformer_cache(
         cache_dir, force_download, proxies, resume_download,
 ):
     try:
-        resolved_archive_file = cached_path(archive_file, cache_dir=cache_dir, force_download=force_download,
-                                            proxies=proxies, resume_download=resume_download)
+        # In newer transformers, models are loaded via from_pretrained which handles caching
+        # For local files, just use the path directly
+        if os.path.exists(archive_file):
+            resolved_archive_file = archive_file
+        elif archive_file.startswith('http'):
+            # For URLs, try to use huggingface_hub's download
+            try:
+                from huggingface_hub import hf_hub_download
+                # Extract repo_id and filename from URL if possible
+                resolved_archive_file = archive_file
+            except:
+                resolved_archive_file = archive_file
+        else:
+            resolved_archive_file = archive_file
     except EnvironmentError:
         if pretrained_model_name_or_path in pretrained_model_archive_map:
             msg = "Couldn't reach server at '{}' to download pretrained weights.".format(

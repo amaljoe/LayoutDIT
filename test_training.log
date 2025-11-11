@@ -1,0 +1,12 @@
+/home/compiling-ganesh/24m0797/workspace/LayoutDIT/.venv/lib64/python3.11/site-packages/huggingface_hub/file_download.py:942: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+Traceback (most recent call last):
+  File "/home/compiling-ganesh/24m0797/workspace/LayoutDIT/train.py", line 586, in <module>
+    main()
+  File "/home/compiling-ganesh/24m0797/workspace/LayoutDIT/train.py", line 565, in main
+    model, tokenizer = get_model_and_tokenizer(args)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/compiling-ganesh/24m0797/workspace/LayoutDIT/train.py", line 257, in get_model_and_tokenizer
+    pretrained_model_name_or_path=args.model_path, base_model_type=args.base_model_type, config=model_config,
+                                  ^^^^^^^^^^^^^^^
+AttributeError: 'Namespace' object has no attribute 'model_path'. Did you mean: 'model_name'?

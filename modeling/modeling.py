@@ -10,7 +10,11 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 
-from transformers.modeling_bert import BertPreTrainedModel
+try:
+    from transformers.modeling_bert import BertPreTrainedModel
+except ImportError:
+    # For transformers >= 4.0, use the new location
+    from transformers.models.bert.modeling_bert import BertPreTrainedModel
 
 
 import math
@@ -54,22 +58,31 @@ class BertPreTrainedForSeq2SeqModel(BertPreTrainedModel):
                         *model_args, **kwargs):
         base_model_type = kwargs.pop('base_model_type', None)
         if base_model_type is not None and "state_dict" not in kwargs:
+            # Try old archive map first
             if base_model_type in cls.supported_convert_pretrained_model_archive_map:
                 pretrained_model_archive_map = cls.supported_convert_pretrained_model_archive_map[base_model_type]
                 if pretrained_model_name_or_path in pretrained_model_archive_map:
-                    state_dict = get_checkpoint_from_transformer_cache(
-                        archive_file=pretrained_model_archive_map[pretrained_model_name_or_path],
-                        pretrained_model_name_or_path=pretrained_model_name_or_path,
-                        pretrained_model_archive_map=pretrained_model_archive_map,
-                        cache_dir=kwargs.get("cache_dir", None), force_download=kwargs.get("force_download", None),
-                        proxies=kwargs.get("proxies", None), resume_download=kwargs.get("resume_download", None),
-                    )
-                    state_dict = state_dict_convert[base_model_type](state_dict)
-                    kwargs["state_dict"] = state_dict
-                elif os.path.isfile(pretrained_model_name_or_path):
-                    kwargs["state_dict"] = torch.load(pretrained_model_name_or_path, map_location='cpu')
+                    try:
+                        state_dict = get_checkpoint_from_transformer_cache(
+                            archive_file=pretrained_model_archive_map[pretrained_model_name_or_path],
+                            pretrained_model_name_or_path=pretrained_model_name_or_path,
+                            pretrained_model_archive_map=pretrained_model_archive_map,
+                            cache_dir=kwargs.get("cache_dir", None), force_download=kwargs.get("force_download", None),
+                            proxies=kwargs.get("proxies", None), resume_download=kwargs.get("resume_download", None),
+                        )
+                        state_dict = state_dict_convert[base_model_type](state_dict)
+                        kwargs["state_dict"] = state_dict
+                    except Exception as e:
+                        logger.warning(f"Failed to load from archive map: {e}, trying standard from_pretrained")
+                        # Fall through to standard loading
+            # Check if it's a local file
+            if "state_dict" not in kwargs and os.path.isfile(pretrained_model_name_or_path):
+                kwargs["state_dict"] = torch.load(pretrained_model_name_or_path, map_location='cpu')
+            # If still no state_dict, let it use standard from_pretrained (for HuggingFace Hub models)
+            # Don't raise error here, let the parent class handle it
 
-        if kwargs["state_dict"] is None:
+        # Only check state_dict if we explicitly set it
+        if "state_dict" in kwargs and kwargs["state_dict"] is None:
             logger.info("s2s-ft does't support the model !")
             raise NotImplementedError()
 

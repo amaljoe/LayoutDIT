@@ -1,0 +1,2 @@
+{"src": "Hello world this is a test", "tgt": "你好 世界 这是 一个 测试", "tgt_index": [0, 1, 2, 3, 4], "tgt_sen_split": "Hello world [CLS] this is [CLS] a test [CLS]", "tgt_sen_translation_split": "你好 世界 [CLS] 这是 [CLS] 一个 测试 [CLS]"}
+{"src": "The quick brown fox", "tgt": "快速 棕色 狐狸", "tgt_index": [0, 1, 2], "tgt_sen_split": "The quick [CLS] brown fox [CLS]", "tgt_sen_translation_split": "快速 [CLS] 棕色 狐狸 [CLS]"}

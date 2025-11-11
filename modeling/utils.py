@@ -9,8 +9,18 @@ import glob
 
 from transformers import AutoTokenizer, BertTokenizer
 
-Chinese_tokenizer_dir = "/path/to/Chinese_tokenizer_dir"
-Chinese_tokenizer = BertTokenizer.from_pretrained(Chinese_tokenizer_dir)
+# Use a standard Chinese BERT tokenizer for testing
+# Users should update this to their actual Chinese tokenizer path
+try:
+    Chinese_tokenizer_dir = "/path/to/Chinese_tokenizer_dir"
+    Chinese_tokenizer = BertTokenizer.from_pretrained(Chinese_tokenizer_dir, local_files_only=True)
+except Exception:
+    # Fallback to bert-base-chinese for testing
+    try:
+        Chinese_tokenizer = BertTokenizer.from_pretrained("bert-base-chinese", local_files_only=True)
+    except:
+        # If not in cache, try without local_files_only (will fail on compute nodes without internet)
+        Chinese_tokenizer = BertTokenizer.from_pretrained("bert-base-chinese")
 
 
 def gelu(x):

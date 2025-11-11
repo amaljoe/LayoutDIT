@@ -185,9 +185,17 @@ def get_model_and_tokenizer(args):
 
     # prepare model config instance.
     config_class, tokenizer_class = MODEL_CLASSES[args.base_model_type]
-    base_model_config = config_class.from_pretrained(
-        args.config_name if args.config_name else args.model_name,
-        cache_dir=args.cache_dir if args.cache_dir else None)
+    # Try to load from cache first (for offline compute nodes)
+    try:
+        base_model_config = config_class.from_pretrained(
+            args.config_name if args.config_name else args.model_name,
+            cache_dir=args.cache_dir if args.cache_dir else None,
+            local_files_only=True)
+    except:
+        # Fallback to online if local_files_only fails
+        base_model_config = config_class.from_pretrained(
+            args.config_name if args.config_name else args.model_name,
+            cache_dir=args.cache_dir if args.cache_dir else None)
     config = BertForSeq2SeqConfig.from_exist_config(
         config=base_model_config, 
         max_source_length=args.max_source_length,
@@ -218,12 +226,23 @@ def get_model_and_tokenizer(args):
             tokenizer_name = args.tokenizer_name
         else:
             tokenizer_name = 'bert' + args.model_name[8:]
-        tokenizer = tokenizer_class.from_pretrained(
-            tokenizer_name, do_lower_case=args.do_lower_case, cache_dir=args.cache_dir if args.cache_dir else None)
+        try:
+            tokenizer = tokenizer_class.from_pretrained(
+                tokenizer_name, do_lower_case=args.do_lower_case, cache_dir=args.cache_dir if args.cache_dir else None,
+                local_files_only=True)
+        except:
+            tokenizer = tokenizer_class.from_pretrained(
+                tokenizer_name, do_lower_case=args.do_lower_case, cache_dir=args.cache_dir if args.cache_dir else None)
     else:
-        tokenizer = tokenizer_class.from_pretrained(
-            args.tokenizer_name if args.tokenizer_name else args.model_name,
-            do_lower_case=args.do_lower_case, cache_dir=args.cache_dir if args.cache_dir else None)
+        try:
+            tokenizer = tokenizer_class.from_pretrained(
+                args.tokenizer_name if args.tokenizer_name else args.model_name,
+                do_lower_case=args.do_lower_case, cache_dir=args.cache_dir if args.cache_dir else None,
+                local_files_only=True)
+        except:
+            tokenizer = tokenizer_class.from_pretrained(
+                args.tokenizer_name if args.tokenizer_name else args.model_name,
+                do_lower_case=args.do_lower_case, cache_dir=args.cache_dir if args.cache_dir else None)
 
 
     # prepare model.
@@ -234,8 +253,9 @@ def get_model_and_tokenizer(args):
         args.model_path = os.path.join(args.model_recovery_dir, "pytorch_model.bin")
         model = LayoutlmReorderingSensegTrans.from_pretrained(args.model_path, config=model_config)
     else:
+        # Use model_name as the pretrained model path when not recovering from checkpoint
         model = LayoutlmReorderingSensegTrans.from_pretrained(
-            pretrained_model_name_or_path=args.model_path, base_model_type=args.base_model_type, config=model_config,
+            pretrained_model_name_or_path=args.model_name, base_model_type=args.base_model_type, config=config,
         )
 
     return model, tokenizer
