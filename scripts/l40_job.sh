@@ -15,6 +15,6 @@ nvidia-smi
 nohup /usr/sbin/sshd -f ~/.ssh/sshd_config_user > ~/.ssh/sshd.log 2>&1 &
 echo "✅ sshd started in background on port 4422"
 
-cd workspace/online-data-mixing-for-finetuning/
-source scripts/setup_dgx.sh 
-jupyter lab
+# cd workspace/LayoutDIT/
+# source scripts/setup_dgx.sh 
+# jupyter lab

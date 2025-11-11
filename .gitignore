@@ -1,4 +1,5 @@
 # DITrans dataset
 data/
 DITrans-EMNLP.zip
-
+.venv/
+wheels/
